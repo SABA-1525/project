@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ambulance Route Notification</title>
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Container Styling */
+    .container {
+      max-width: 600px;
+      width: 90%;
+      background: white;
+      color: #333;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      text-align: center;
+      background: linear-gradient(to right, #007bff, #0056b3);
+      padding: 20px;
+      color: white;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .form-container {
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #007bff;
+    }
+
+    button {
+      background: linear-gradient(to right, #4facfe, #007bff);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #007bff, #0056b3);
+    }
+
+    /* Image Styling */
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-bottom: 5px solid #007bff;
+    }
+
+    .details {
+      padding: 15px;
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .details h3 {
+      margin: 0 0 10px;
+    }
+
+    .details p {
+      margin: 5px 0;
+    }
+
+    .contact-buttons a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 10px 5px 0;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .contact-buttons a:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Ambulance Route Notification</h1>
+    </div>
+    <img src="file:///C:/Users/sabaf/Downloads/qr-code.png" alt="QR Code for Emergency Details" width="150">
+
+    <div class="form-container">
+      <form id="routeForm">
+        <!-- Current Location -->
+        <div class="form-group">
+          <label for="currentLocation">Enter Ambulance Current Location:</label>
+          <input type="text" id="currentLocation" placeholder="E.g., Main Street, City" required>
+        </div>
+
+        <!-- Select Hospital -->
+        <div class="form-group">
+          <label for="hospital">Select Destination Hospital:</label>
+          <select id="hospital" required>
+            <option value="">--Select a Hospital--</option>
+            <option value="City Hospital">City Hospital</option>
+            <option value="Green Valley Clinic">Green Valley Clinic</option>
+            <option value="Downtown Medical Center">Downtown Medical Center</option>
+          </select>
+        </div>
+
+        <!-- Emergency Mode -->
+        <div class="form-group">
+          <label for="urgency">Select Urgency Level:</label>
+          <select id="urgency" required>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit">Send Notification</button>
+      </form>
+    </div>
+
+    <!-- Hospital Details -->
+    <div class="details" id="hospitalDetails" style="display: none;">
+      <h3>Hospital Details:</h3>
+      <p><strong>Name:</strong> <span id="hospitalName"></span></p>
+      <p><strong>Contact:</strong> <span id="hospitalContact"></span></p>
+      <p><strong>Address:</strong> <span id="hospitalAddress"></span></p>
+      <p><strong>Specialties:</strong> <span id="hospitalSpecialties"></span></p>
+      <div class="contact-buttons">
+        <a href="#" id="callHospital">Call Hospital</a>
+        <a href="tel:100">Notify Police</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const hospitals = {
+      "City Hospital": {
+        contact: "123-456-7890",
+        address: "123 Main Street, City Center",
+        specialties: "Emergency, Cardiology, Neurology"
+      },
+      "Green Valley Clinic": {
+        contact: "987-654-3210",
+        address: "456 Green Valley Road, Suburbs",
+        specialties: "Pediatrics, Maternity, Orthopedics"
+      },
+      "Downtown Medical Center": {
+        contact: "555-666-7777",
+        address: "789 Downtown Avenue, Metro Area",
+        specialties: "General Surgery, Dermatology, ENT"
+      }
+    };
+
+    document.getElementById('routeForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const currentLocation = document.getElementById('currentLocation').value;
+      const hospital = document.getElementById('hospital').value;
+      const urgency = document.getElementById('urgency').value;
+
+      if (!currentLocation || !hospital || !urgency) {
+        alert('Please fill out all required fields.');
+        return;
+      }
+
+      const hospitalDetails = hospitals[hospital];
+      document.getElementById('hospitalDetails').style.display = 'block';
+      document.getElementById('hospitalName').textContent = hospital;
+      document.getElementById('hospitalContact').textContent = hospitalDetails.contact;
+      document.getElementById('hospitalAddress').textContent = hospitalDetails.address;
+      document.getElementById('hospitalSpecialties').textContent = hospitalDetails.specialties;
+
+      document.getElementById('callHospital').setAttribute('href', `tel:${hospitalDetails.contact}`);
+
+      const message = `Ambulance heading to ${hospital} with ${urgency} urgency.`;
+      const utterance = new SpeechSynthesisUtterance(message);
+      speechSynthesis.speak(utterance);
+
+      alert('Notification sent: ' + message);
+    });
+  </script>
+</body>
+</html>
